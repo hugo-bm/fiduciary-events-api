@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Issuer
@@ -16,7 +17,7 @@ class Issuer extends Model
     /**
      * Get all operations for the issuer.
      */
-    public function operations(): hasMany
+    public function operations(): HasMany
     {
         return $this->hasMany(Operation::class);
     }
