@@ -12,6 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Obligation extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
     protected $fillable = [
         'operation_id',
         'title',
@@ -20,10 +25,18 @@ class Obligation extends Model
         'delivered_at'
     ];
 
-    protected $cast = [
-        'due_date' => 'date',
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'due_date' => 'date',
         'delivered' => 'date',
-    ];
+        ];
+    }
 
     /**
      * Get the operation that owns the obligation.
