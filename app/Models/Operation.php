@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Operation
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Operation extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'issue_id',
         'asset_code',
