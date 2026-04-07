@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['api.key'])->group(function () {
 
     // Public read access
-    Route::get('/issuers', fn () => 'list issuers');
+    Route::get('/issuers', [IssuerController::class, 'index']);
     Route::get('/operations', fn () => 'list operations');
     Route::get('/obligations', fn () => 'list obligations');
 
@@ -18,8 +18,8 @@ Route::middleware(['api.key'])->group(function () {
     // Admin only
     Route::middleware(['role:ADMIN'])->group(function () {
          // Issuers / Operations
-        Route::post('/issuers', fn () => 'create issuer');
-        Route::put('/issuers/{id}', fn () => 'update issuer');
+        Route::post('/issuers', [IssuerController::class, 'store']);
+        Route::put('/issuers/{issuer}', [IssuerController::class, 'update']);
 
         Route::post('/operations', fn () => 'create operation');
         Route::put('/operations/{id}', fn () => 'update operation');
@@ -27,8 +27,6 @@ Route::middleware(['api.key'])->group(function () {
         // Obligations
         Route::post('/obligations', [ObligationController::class, 'store']);
 
-        // (Opcional) delete
-        Route::delete('/issuers/{id}', fn () => 'delete issuer');
     });
 
     Route::middleware(['role:ADMIN,ANALYST'])->group(function () {
