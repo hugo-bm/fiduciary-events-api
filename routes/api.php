@@ -33,7 +33,7 @@ Route::middleware(['api.key'])->group(function () {
 
     Route::middleware(['role:ADMIN,ANALYST'])->group(function () {
         // Update obligation status
-        Route::patch('/obligations/{id}/status', fn () => 'update obligation status');
+        Route::patch('/obligations/{obligation}/status', [ObligationController::class, 'updateStatus']);
     });
 
 });
