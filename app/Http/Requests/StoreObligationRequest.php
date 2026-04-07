@@ -31,7 +31,7 @@ class StoreObligationRequest extends FormRequest
             'operation_id' => 'required|exists:operations,id',
             'title' => 'required|string|max:255',
             'due_date' => 'required|date',
-            'status' => 'required|in:PENDING,COMPLETED,CANCELLED',
+            'status' => 'required|in:PENDING,DELIVERED,CANCELLED',
         ];
     }
 }
