@@ -25,7 +25,7 @@ class ApiKeyAuthMiddleware
             ], 401);
         }
 
-        $users = User::where('is_active', true)->get();
+        $users = User::where('is_active', true)->select('id', 'api_key', 'role')->get();
 
         $authenticatedUser = null;
 
