@@ -25,7 +25,7 @@ Route::middleware(['api.key'])->group(function () {
         Route::put('/operations/{id}', fn () => 'update operation');
 
         // Obligations
-        Route::post('/obligations', fn () => 'create obligation');
+        Route::post('/obligations', [ObligationController::class, 'store']);
 
         // (Opcional) delete
         Route::delete('/issuers/{id}', fn () => 'delete issuer');
