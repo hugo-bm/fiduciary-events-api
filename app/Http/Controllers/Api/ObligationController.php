@@ -17,6 +17,28 @@ use App\Http\Resources\ObligationResource;
  */
 class ObligationController extends Controller
 {
+
+    /**
+     * Create a new obligation
+     */
+    public function store(
+        StoreObligationRequest $request,
+        ObligationService $service
+    ): JsonResponse {
+
+        $user = $request->attributes->get('authenticated_user');
+
+        $obligation = $service->create(
+            $request->validated(),
+            $user->id
+        );
+
+        return response()->json([
+            'message' => 'Obligation created successfully',
+            'data' => new ObligationResource($obligation)
+        ], 201);
+    }
+
     /**
      * Update obligation status
      *

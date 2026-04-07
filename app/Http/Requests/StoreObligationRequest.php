@@ -5,15 +5,19 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateObligationStatusRequest extends FormRequest
+/**
+ * Class StoreObligationRequest
+ *
+ * Handles validation for creating obligations.
+ */
+class StoreObligationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        // Authorization handled by middleware
-        return true;
+        return false; //ACL via middleware
     }
 
     /**
@@ -24,7 +28,10 @@ class UpdateObligationStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'operation_id' => 'required|exists:operations,id',
+            'title' => 'required|string|max:255',
+            'due_date' => 'required|date',
             'status' => 'required|in:PENDING,DELIVERED,CANCELLED',
-    ];
+        ];
     }
 }
