@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
-use App\Model\User;
+use App\Models\User;
 
 class ApiKeyAuthMiddleware
 {
