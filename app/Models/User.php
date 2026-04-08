@@ -38,6 +38,11 @@ class User extends Model
         'api_key',
     ];
 
+    public function operations()
+    {
+        return $this->belongsToMany(User::class, 'operation_user');
+    }
+
     /**
      * Get the attributes that should be cast.
      *
