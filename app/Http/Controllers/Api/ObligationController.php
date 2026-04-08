@@ -18,6 +18,26 @@ use App\Http\Resources\ObligationResource;
 class ObligationController extends Controller
 {
 
+    public function index(): JsonResponse
+    {
+        $user = request()->attributes->get('authenticated_user');
+
+        $obligations = Obligation::visibleTo($user)
+            ->with('operation')
+            ->orderBy('due_date')
+            ->paginate(15);
+
+        return response()->json([
+            'data' => ObligationResource::collection($obligations),
+            'meta' => [
+                'current_page' => $obligations->currentPage(),
+                'last_page' => $obligations->lastPage(),
+                'per_page' => $obligations->perPage(),
+                'total' => $obligations->total(),
+            ]
+        ]);
+    }
+
     /**
      * Create a new obligation
      */

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Obligation;
 use Illuminate\Support\Facades\DB;
 Use App\Enums\ObligationStatusEnum;
+Use App\Enums\UserRoleEnum;
 
 class ObligationService
 {
@@ -18,6 +19,7 @@ class ObligationService
      */
     public function create(array $data, int $userId): Obligation
     {
+        $this->ensureUserHasAccessToOperation($data['operation_id'], $user, [UserRoleEnum::ADMIN]);
         return DB::transaction(function () use ($data, $userId) {
 
             $obligation = Obligation::create([
@@ -25,7 +27,7 @@ class ObligationService
                 'title' => $data['title'],
                 'due_date' => $data['due_date'],
                 'status' => $data['status'],
-                'delivered_at' => $data['status'] === 'COMPLETED' ? now() : null,
+                'delivered_at' => null,
             ]);
 
             
@@ -45,6 +47,7 @@ class ObligationService
         string $status,
         int $userId
     ): Obligation {
+        $this->ensureUserHasAccessToOperation($obligation->operation_id, $user, [UserRoleEnum::ANALYST, UserRoleEnum::ADMIN]);
         return DB::transaction(function () use ($obligation, $status, $userId) {
 
             $before = $obligation->toArray();
@@ -69,5 +72,28 @@ class ObligationService
 
             return $obligation;
         });
+    }
+
+
+    private function ensureUserHasAccessToOperation(int $operationId, $user, array $roles): void
+    {
+        $userRole = UserRoleEnum::from($user->role);
+
+        $allowedRoles = array_map(
+            fn ($role) => UserRoleEnum::from($role),
+            $roles
+        );
+
+        if (!$userRole->canAccess($allowedRoles)) {
+            return;
+        }
+
+        $hasAccess = $user->operations()
+            ->where('operations.id', $operationId)
+            ->exists();
+
+        if (!$hasAccess) {
+            abort(403, 'Forbidden: operation not assigned to user');
+        }
     }
 }

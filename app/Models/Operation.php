@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\OperationTypeEnum;
+use App\Enums\UserRoleEnum;
 
 /**
  * Class Operation
@@ -27,6 +30,37 @@ class Operation extends Model
      */
     public function issue(): BelongsTo {
         return $this->belongsTo(Issuer::class);
+    }
+
+    public function analysts()
+    {
+        return $this->belongsToMany(User::class, 'operation_user');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'operation_type' => OperationTypeEnum::class,
+        ];
+    }
+
+    /**
+     * Scope to filter operations visible to a given user
+     *
+     * @param $query
+     * @param \App\Models\User $user
+     * @return mixed
+     */
+    public function scopeVisibleTo($query, $user)
+    {
+        $userRole = UserRoleEnum::from($user->role);
+        if ($userRole === UserRoleEnum::ANALYST) {
+            return $query->whereHas('analysts', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            });
+        }
+
+        return $query;
     }
 
     /**
