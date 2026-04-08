@@ -12,7 +12,7 @@ Route::middleware(['api.key'])->group(function () {
     // Public read access
     Route::get('/issuers', [IssuerController::class, 'index']);
     Route::get('/operations', [OperationController::class, 'index']);
-    Route::get('/obligations', fn () => 'list obligations');
+    Route::get('/obligations', [ObligationController::class, 'index']);
 
     // Audit Logs
     Route::middleware(['role:ADMIN,AUDITOR'])->group(function () {
