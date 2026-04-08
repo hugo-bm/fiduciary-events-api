@@ -2,12 +2,15 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\OperationController;
+use App\Http\Controllers\Api\IssuerController;
+use App\Http\Controllers\Api\ObligationController;
 
 Route::middleware(['api.key'])->group(function () {
 
     // Public read access
     Route::get('/issuers', [IssuerController::class, 'index']);
-    Route::get('/operations', fn () => 'list operations');
+    Route::get('/operations', [OperationController::class, 'index']);
     Route::get('/obligations', fn () => 'list obligations');
 
     // Audit Logs
@@ -21,8 +24,8 @@ Route::middleware(['api.key'])->group(function () {
         Route::post('/issuers', [IssuerController::class, 'store']);
         Route::put('/issuers/{issuer}', [IssuerController::class, 'update']);
 
-        Route::post('/operations', fn () => 'create operation');
-        Route::put('/operations/{id}', fn () => 'update operation');
+        Route::post('/operations', [OperationController::class, 'store']);
+        Route::put('/operations/{operation}', [OperationController::class, 'update']);
 
         // Obligations
         Route::post('/obligations', [ObligationController::class, 'store']);
