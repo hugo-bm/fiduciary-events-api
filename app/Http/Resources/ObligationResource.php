@@ -12,6 +12,26 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class ObligationResource extends JsonResource
 {
+
+    /**
+     * Calculate risk level based on due date
+     */
+    private function calculateRiskLevel(): string
+    {
+        $dueDate = $this->due_date;
+        $today = now();
+
+        if ($dueDate <= $today) {
+            return 'CRITICAL';
+        }
+
+        if ($dueDate <= $today->copy()->addDays(14)) {
+            return 'WARNING';
+        }
+
+        return 'NORMAL';
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -26,6 +46,7 @@ class ObligationResource extends JsonResource
             'status' => $this->status,
             'due_date' => $this->due_date,
             'delivered_at' => $this->delivered_at,
+            'risk_level' => $this->calculateRiskLevel(),
         ];
     }
 }
