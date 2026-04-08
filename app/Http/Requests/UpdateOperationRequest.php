@@ -19,7 +19,7 @@ class UpdateOperationRequest extends FormRequest
     {
         if ($this->operation_code) {
             $this->merge([
-                'asset_code' => strtoupper($this->operation_code),
+                'asset_code' => strtoupper($this->asset_code),
             ]);
         }
     }
@@ -33,7 +33,7 @@ class UpdateOperationRequest extends FormRequest
     {
         return [
             'asset_code' => 'sometimes|string|max:50|unique:operations,asset_code,' . $this->route('operation')->id,
-            'operation_type' => 'sometimes|in:DEBENTURE,CRI,CRA',
+            'operation_type' => ['sometimes', 'in:' . implode(',', array_column(OperationTypeEnum::cases(), 'value'))],
         ];
     }
 }

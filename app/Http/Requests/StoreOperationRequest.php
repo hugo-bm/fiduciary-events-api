@@ -22,7 +22,7 @@ class StoreOperationRequest extends FormRequest
     {
         if ($this->operation_code) {
             $this->merge([
-                'asset_code' => strtoupper($this->operation_code),
+                'asset_code' => strtoupper($this->asset_code),
             ]);
         }
     }
@@ -37,7 +37,7 @@ class StoreOperationRequest extends FormRequest
         return [
             'issuer_id' => 'required|exists:issuers,id',
             'asset_code' => 'required|string|max:50|unique:operations,asset_code',
-            'operation_type' => 'required|in:DEBENTURE,CRI,CRA',
+            'operation_type' => ['required', 'in:' . implode(',', array_column(OperationTypeEnum::cases(), 'value'))],
         ];
     }
 }
