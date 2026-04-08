@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\OperationController;
 use App\Http\Controllers\Api\IssuerController;
 use App\Http\Controllers\Api\ObligationController;
 use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\UserController;
 
 Route::middleware(['api.key'])->group(function () {
 
@@ -14,9 +15,10 @@ Route::middleware(['api.key'])->group(function () {
     Route::get('/operations', [OperationController::class, 'index']);
     Route::get('/obligations', [ObligationController::class, 'index']);
 
-    // Audit Logs
+    // Audit routes
     Route::middleware(['role:ADMIN,AUDITOR'])->group(function () {
         Route::get('/audit-logs', [AuditLogController::class, 'index']);
+        Route::get('/users', [UserController::class, 'index']);
     });
 
     // Admin only
@@ -31,6 +33,12 @@ Route::middleware(['api.key'])->group(function () {
         // Obligations
         Route::post('/obligations', [ObligationController::class, 'store']);
 
+        // Users
+
+        Route::post('/users', [UserController::class, 'store']);
+        Route::patch('/users/{user}', [UserController::class, 'update']);
+        Route::patch('/users/{user}/status', [UserController::class, 'updateStatus']);
+
     });
 
     Route::middleware(['role:ADMIN,ANALYST'])->group(function () {
@@ -39,7 +47,3 @@ Route::middleware(['api.key'])->group(function () {
     });
 
 });
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
