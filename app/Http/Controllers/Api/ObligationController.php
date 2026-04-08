@@ -83,4 +83,36 @@ class ObligationController extends Controller
             'data' => new ObligationResource($updatedObligation)
         ]);
     }
+
+    public function pendencies(): JsonResponse
+    {
+        $user = request()->attributes->get('authenticated_user');
+
+        $obligations = Obligation::visibleTo($user)
+            ->pending()
+            ->orderBy('due_date')
+            ->paginate(15);
+
+        return response()->json([
+            'data' => ObligationResource::collection($obligations),
+            'meta' => [
+                'total' => $obligations->total(),
+            ]
+        ]);
+    }
+
+    public function overdue(): JsonResponse
+    {
+        $user = request()->attributes->get('authenticated_user');
+
+        $obligations = Obligation::visibleTo($user)
+            ->pending()
+            ->overdue()
+            ->orderBy('due_date')
+            ->paginate(15);
+
+        return response()->json([
+            'data' => ObligationResource::collection($obligations),
+        ]);
+    }
 }

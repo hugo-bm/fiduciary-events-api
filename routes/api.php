@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\IssuerController;
 use App\Http\Controllers\Api\ObligationController;
 use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\DashboardController;
 
 Route::middleware(['api.key'])->group(function () {
 
@@ -14,6 +15,10 @@ Route::middleware(['api.key'])->group(function () {
     Route::get('/issuers', [IssuerController::class, 'index']);
     Route::get('/operations', [OperationController::class, 'index']);
     Route::get('/obligations', [ObligationController::class, 'index']);
+    // Public read access with filters (interInternally, the data is adjusted according to the profile(role))
+    Route::get('/dashboard/summary', [DashboardController::class, 'summary']);
+    Route::get('/obligations/pendencies', [ObligationController::class, 'pendencies']);
+    Route::get('/obligations/overdue', [ObligationController::class, 'overdue']);
 
     // Audit routes
     Route::middleware(['role:ADMIN,AUDITOR'])->group(function () {
