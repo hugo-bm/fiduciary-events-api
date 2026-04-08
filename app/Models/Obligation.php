@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\UserRoleEnum;
 
 /**
  * Class Obligation
@@ -38,6 +39,25 @@ class Obligation extends Model
             'due_date' => 'date',
         'delivered' => 'date',
         ];
+    }
+
+    /**
+     * Scope to filter obligations visible to a given user
+     *
+     * @param $query
+     * @param \App\Models\User $user
+     * @return mixed
+     */
+    public function scopeVisibleTo($query, $user)
+    {
+         $userRole = UserRoleEnum::from($user->role);
+        if ($userRole === UserRoleEnum::ANALYST) {
+            return $query->whereHas('operation.analysts', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            });
+        }
+
+        return $query;
     }
 
     /**
