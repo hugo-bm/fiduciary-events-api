@@ -23,7 +23,11 @@ class OperationController extends Controller
      */
     public function index(): JsonResponse
     {
-        $operations = Operation::paginate(15);
+        $user = request()->attributes->get('authenticated_user');
+
+        $operations = Operation::visibleTo($user)
+        ->orderBy('asset_code')
+        ->paginate(15);
 
         return response()->json([
             'data' => OperationResource::collection($operations),
