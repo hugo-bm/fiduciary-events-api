@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\OperationTypeEnum;
 
 /**
  * Class Operation
@@ -29,6 +30,12 @@ class Operation extends Model
         return $this->belongsTo(Issuer::class);
     }
 
+    protected function casts(): array
+    {
+        return [
+            'operation_type' => OperationTypeEnum::class,
+        ];
+    }
     /**
      * Get obligations for the operation.
      */
