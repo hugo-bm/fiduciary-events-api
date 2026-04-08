@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enums\OperationTypeEnum;
@@ -28,6 +29,11 @@ class Operation extends Model
      */
     public function issue(): BelongsTo {
         return $this->belongsTo(Issuer::class);
+    }
+
+    public function analysts()
+    {
+        return $this->belongsToMany(User::class, 'operation_user');
     }
 
     protected function casts(): array
