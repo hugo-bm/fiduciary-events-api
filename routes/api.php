@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OperationController;
 use App\Http\Controllers\Api\IssuerController;
 use App\Http\Controllers\Api\ObligationController;
+use App\Http\Controllers\Api\AuditLogController;
 
 Route::middleware(['api.key'])->group(function () {
 
@@ -15,7 +16,7 @@ Route::middleware(['api.key'])->group(function () {
 
     // Audit Logs
     Route::middleware(['role:ADMIN,AUDITOR'])->group(function () {
-        Route::get('/audit-logs', fn () => 'list audit logs');
+        Route::get('/audit-logs', [AuditLogController::class, 'index']);
     });
 
     // Admin only
