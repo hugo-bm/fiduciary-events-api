@@ -60,6 +60,53 @@ class Obligation extends Model
         return $query;
     }
 
+
+    /**
+     * Scope overdue obligations (CRITICAL)
+     * 
+     * @param $query
+     * @return mixed
+     */
+    public function scopeOverdue($query)
+    {
+        return $query->whereDate('due_date', '<=', now());
+    }
+
+    /**
+     * Scope warning obligations
+     * 
+     * @param $query
+     * @return mixed
+     */
+    public function scopeWarning($query)
+    {
+        return $query->whereDate('due_date', '>', now())
+            ->whereDate('due_date', '<=', now()->addDays(14));
+    }
+
+    /**
+     * Scope normal obligations
+     * 
+     * @param $query
+     * @return mixed
+     */
+    public function scopeNormal($query)
+    {
+        return $query->whereDate('due_date', '>', now()->addDays(14));
+    }
+
+    /**
+     * Scope pending obligations
+     * 
+     * @param $query
+     * @return mixed
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'PENDING');
+    }
+
+
     /**
      * Get the operation that owns the obligation.
      */
