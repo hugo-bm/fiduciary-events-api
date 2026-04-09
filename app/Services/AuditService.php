@@ -26,10 +26,10 @@ class AuditService
         AuditLog::create([
             'user_id' => $userId,
             'action' => $action,
-            'details' => [
+            'details' => json_encode([
                 'before' => $before,
                 'after' => $after,
-            ],
+            ]),
         ]);
     }
 

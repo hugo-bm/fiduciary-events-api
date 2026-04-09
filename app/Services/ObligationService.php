@@ -6,6 +6,7 @@ use App\Models\Obligation;
 use Illuminate\Support\Facades\DB;
 Use App\Enums\ObligationStatusEnum;
 Use App\Enums\UserRoleEnum;
+use App\Services\AuditService;
 
 class ObligationService
 {
@@ -17,22 +18,22 @@ class ObligationService
     /**
      * Create a new obligation with audit logging
      */
-    public function create(array $data, int $userId): Obligation
+    public function create(array $data, $user): Obligation
     {
-        $this->ensureUserHasAccessToOperation($data['operation_id'], $user, [UserRoleEnum::ADMIN]);
-        return DB::transaction(function () use ($data, $userId) {
+        $this->ensureUserHasAccessToOperation($data['operation_id'], $user, ["ADMIN"]);
+        return DB::transaction(function () use ($data, $user) {
 
             $obligation = Obligation::create([
                 'operation_id' => $data['operation_id'],
                 'title' => $data['title'],
                 'due_date' => $data['due_date'],
-                'status' => $data['status'],
+                'status' => ObligationStatusEnum::PENDING->value,
                 'delivered_at' => null,
             ]);
 
             
             $this->auditService->log(
-                $userId,
+                $user->id,
                 'CREATE_OBLIGATION',
                 null,
                 $obligation->toArray()
@@ -45,11 +46,11 @@ class ObligationService
     public function updateStatus(
         Obligation $obligation,
         string $status,
-        int $userId
+        $user
     ): Obligation {
-        $this->ensureUserHasAccessToOperation($obligation->operation_id, $user, [UserRoleEnum::ANALYST, UserRoleEnum::ADMIN]);
-        return DB::transaction(function () use ($obligation, $status, $userId) {
-
+        $this->ensureUserHasAccessToOperation($obligation->operation_id, $user, ["ANALYST", "ADMIN"]);
+        return DB::transaction(function () use ($obligation, $status, $user) {
+            
             $before = $obligation->toArray();
 
             $obligation->status = $status;
@@ -62,9 +63,8 @@ class ObligationService
 
             $after = $obligation->toArray();
 
-
             $this->auditService->log(
-                $userId,
+                $user->id,
                 'UPDATE_OBLIGATION_STATUS',
                 $before,
                 $after
@@ -83,17 +83,20 @@ class ObligationService
             fn ($role) => UserRoleEnum::from($role),
             $roles
         );
-
+        
         if (!$userRole->canAccess($allowedRoles)) {
-            return;
+            abort(403, 'Forbidden');
         }
 
-        $hasAccess = $user->operations()
+        if ($userRole !== UserRoleEnum::ADMIN)
+        {
+            $hasAccess = $user->operations()
             ->where('operations.id', $operationId)
             ->exists();
 
-        if (!$hasAccess) {
-            abort(403, 'Forbidden: operation not assigned to user');
+            if (!$hasAccess ) {
+                abort(403, 'Forbidden: operation not assigned to user');
+            }
         }
     }
 }

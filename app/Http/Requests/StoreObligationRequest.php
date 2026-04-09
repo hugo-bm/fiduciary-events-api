@@ -17,7 +17,7 @@ class StoreObligationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false; //ACL via middleware
+        return true; //ACL via middleware
     }
 
     /**
@@ -31,7 +31,6 @@ class StoreObligationRequest extends FormRequest
             'operation_id' => 'required|exists:operations,id',
             'title' => 'required|string|max:255',
             'due_date' => 'required|date',
-            'status' => 'required|in:PENDING,DELIVERED,CANCELLED',
         ];
     }
 }

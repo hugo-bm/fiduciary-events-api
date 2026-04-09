@@ -24,7 +24,7 @@ class IssuerService
         return DB::transaction(function () use ($data, $userId) {
 
             $issuer = Issuer::create([
-                'name' => $data['name'],
+                'corporate_name' => $data['corporate_name'],
                 'cnpj' => $data['cnpj'],
             ]);
 
