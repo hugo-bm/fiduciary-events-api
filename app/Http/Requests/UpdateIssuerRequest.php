@@ -24,7 +24,7 @@ class UpdateIssuerRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'name' => 'sometimes|string|max:255',
+        'corporate_name' => 'sometimes|string|max:255',
         'cnpj' => [
             'sometimes',
             'string',
