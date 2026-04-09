@@ -24,7 +24,7 @@ class StoreIssuerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'corporate_name' => 'required|string|max:255',
             'cnpj' => [
                 'required',
                 'string',
