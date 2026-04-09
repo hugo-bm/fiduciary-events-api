@@ -40,7 +40,12 @@ class User extends Model
 
     public function operations()
     {
-        return $this->belongsToMany(User::class, 'operation_user');
+        return $this->belongsToMany(
+            Operation::class,
+            'operation_user',
+            'user_id',
+            'operation_id'
+        );
     }
 
     /**

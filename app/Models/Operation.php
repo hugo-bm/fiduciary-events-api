@@ -34,7 +34,12 @@ class Operation extends Model
 
     public function analysts()
     {
-        return $this->belongsToMany(User::class, 'operation_user');
+        return $this->belongsToMany(
+            User::class,
+            'operation_user',
+            'operation_id',
+            'user_id'
+        );
     }
 
     protected function casts(): array
