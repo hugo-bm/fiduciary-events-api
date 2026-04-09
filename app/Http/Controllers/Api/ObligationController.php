@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\UpdateObligationStatusRequest;
+use App\Http\Requests\StoreObligationRequest;
 use App\Models\Obligation;
 use App\Services\ObligationService;
 use App\Http\Resources\ObligationResource;
@@ -50,7 +51,7 @@ class ObligationController extends Controller
 
         $obligation = $service->create(
             $request->validated(),
-            $user->id
+            $user
         );
 
         return response()->json([
@@ -69,13 +70,12 @@ class ObligationController extends Controller
         Obligation $obligation,
         ObligationService $service
     ): JsonResponse {
-
         $user = $request->attributes->get('authenticated_user');
 
         $updatedObligation = $service->updateStatus(
             $obligation,
             $request->input('status'),
-            $user->id
+            $user
         );
 
         return response()->json([
