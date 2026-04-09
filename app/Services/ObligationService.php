@@ -27,7 +27,7 @@ class ObligationService
                 'operation_id' => $data['operation_id'],
                 'title' => $data['title'],
                 'due_date' => $data['due_date'],
-                'status' => $data['status'],
+                'status' => ObligationStatusEnum::PENDING->value,
                 'delivered_at' => null,
             ]);
 
@@ -88,12 +88,15 @@ class ObligationService
             abort(403, 'Forbidden');
         }
 
-        $hasAccess = $user->operations()
+        if ($userRole !== UserRoleEnum::ADMIN)
+        {
+            $hasAccess = $user->operations()
             ->where('operations.id', $operationId)
             ->exists();
 
-        if (!$hasAccess) {
-            abort(403, 'Forbidden: operation not assigned to user');
+            if (!$hasAccess ) {
+                abort(403, 'Forbidden: operation not assigned to user');
+            }
         }
     }
 }
