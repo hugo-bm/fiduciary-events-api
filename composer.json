@@ -1,9 +1,23 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "hbugo-bm/fiduciary-events-api",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "A fiduciary obligation management system with an immutable audit trail and regulatory risk traffic light system.",
+    "authors": [
+        {
+            "name": "Hugo Batalha Moreno",
+            "email": "batalha.hugo@outlook.com",
+            "homepage": "https://www.linkedin.com/in/hugo-batalha-moreno",
+            "role": "Lead Developer"
+        }
+    ],
+    "keywords": [
+        "agente-fiduciario",
+        "laravel",
+        "securitizacao",
+        "compliance",
+        "audit-trail"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
