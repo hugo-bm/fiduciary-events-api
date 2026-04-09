@@ -23,4 +23,11 @@ abstract class TestCase extends BaseTestCase
             'api_key' => bcrypt('test-key'),
         ]);
     }
+
+    protected function assignOperationToAnalyst($analyst, $operation)
+    {
+        $analyst->operations()->attach($operation->id);
+    }
+
+    
 }
