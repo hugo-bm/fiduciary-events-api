@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Support\RequestLogger;
 
 class ApiKeyAuthMiddleware
 {
@@ -20,6 +21,9 @@ class ApiKeyAuthMiddleware
         $apiKey = $request->header('X-API-KEY');
 
         if (!$apiKey) {
+            RequestLogger::log('warning', 'Unauthorized access attempt', [
+                'reason' => 'Missing API key',
+            ]);
             return response()->json([
                 'message' => 'API key is required'
             ], 401);
@@ -37,6 +41,9 @@ class ApiKeyAuthMiddleware
         }
 
         if (!$authenticatedUser) {
+            RequestLogger::log('warning', 'Unauthorized access attempt', [
+                'reason' => 'Invalid API key',
+            ]);
             return response()->json([
                 'message' => 'Invalid API key'
             ], 401);
