@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Enums\UserRoleEnum;
+use App\Support\RequestLogger;
 
 class RoleMiddleware
 {
@@ -19,6 +20,9 @@ class RoleMiddleware
         $user = $request->attributes->get('authenticated_user');
 
         if (!$user) {
+            RequestLogger::log('warning', 'Unauthorized access attempt', [
+                'reason' => 'Resource access is not permitted',
+            ]);
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -32,6 +36,10 @@ class RoleMiddleware
         );
 
         if (!$userRole->canAccess($allowedRoles)) {
+            RequestLogger::log('warning', 'Forbidden access attempt', [
+                'required_roles' => $roles,
+                'user_role' => $user->role,
+            ]);
             return response()->json([
                 'message' => 'Forbidden'
             ], 403);
